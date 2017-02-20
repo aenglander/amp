@@ -3,6 +3,7 @@
 namespace Amp;
 
 use AsyncInterop\Promise;
+use React\Promise\PromiseInterface as ReactPromise;
 
 /**
  * Creates a promise that calls $promisor only when the result of the promise is requested (i.e. when() is called on
@@ -33,6 +34,10 @@ class LazyPromise implements Promise {
 
             try {
                 $this->promise = $provider();
+
+                if ($this->promise instanceof ReactPromise) {
+                    $this->promise = adapt($this->promise);
+                }
 
                 if (!$this->promise instanceof Promise) {
                     $this->promise = new Success($this->promise);

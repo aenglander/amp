@@ -5,6 +5,7 @@ namespace Amp\Test;
 use Amp;
 use Amp\{ Coroutine, Failure, InvalidYieldError, Pause, Success };
 use AsyncInterop\{ Loop, Promise };
+use React\Promise\Promise as ReactPromise;
 
 class CoroutineTest extends \PHPUnit_Framework_TestCase {
     const TIMEOUT = 100;
@@ -601,5 +602,135 @@ class CoroutineTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertNull($reason);
         $this->assertSame($value, $result);
+    }
+
+    public function testYieldingFulfilledReactPromise() {
+        $value = 1;
+        $promise = new ReactPromise(function ($resolve, $reject) use ($value) {
+            $resolve($value);
+        });
+
+        $generator = function () use ($promise) {
+            return yield $promise;
+        };
+
+        $coroutine = new Coroutine($generator());
+
+        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+            $reason = $exception;
+            $result = $value;
+        });
+
+        $this->assertNull($reason);
+        $this->assertSame($value, $result);
+    }
+
+    public function testYieldingFulfilledReactPromiseAfterInteropPromise() {
+        $value = 1;
+        $promise = new ReactPromise(function ($resolve, $reject) use ($value) {
+            $resolve($value);
+        });
+
+        $generator = function () use ($promise) {
+            $value = yield new Success(-1);
+            return yield $promise;
+        };
+
+        $coroutine = new Coroutine($generator());
+
+        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+            $reason = $exception;
+            $result = $value;
+        });
+
+        $this->assertNull($reason);
+        $this->assertSame($value, $result);
+    }
+
+    public function testYieldingRejectedReactPromise() {
+        $exception = new \Exception;
+        $promise = new ReactPromise(function ($resolve, $reject) use ($exception) {
+            $reject($exception);
+        });
+
+        $generator = function () use ($promise) {
+            return yield $promise;
+        };
+
+        $coroutine = new Coroutine($generator());
+
+        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+            $reason = $exception;
+            $result = $value;
+        });
+
+        $this->assertSame($reason, $exception);
+        $this->assertNull($result);
+    }
+
+    public function testYieldingRejectedReactPromiseAfterInteropPromise() {
+        $exception = new \Exception;
+        $promise = new ReactPromise(function ($resolve, $reject) use ($exception) {
+            $reject($exception);
+        });
+
+        $generator = function () use ($promise) {
+            $value = yield new Success(-1);
+            return yield $promise;
+        };
+
+        $coroutine = new Coroutine($generator());
+
+        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+            $reason = $exception;
+            $result = $value;
+        });
+
+        $this->assertSame($reason, $exception);
+        $this->assertNull($result);
+    }
+
+    public function testReturnFulfilledReactPromise() {
+        $value = 1;
+        $promise = new ReactPromise(function ($resolve, $reject) use ($value) {
+            $resolve($value);
+        });
+
+        $generator = function () use ($promise) {
+            return $promise;
+            yield; // Unreachable, but makes function a generator.
+        };
+
+        $coroutine = new Coroutine($generator());
+
+        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+            $reason = $exception;
+            $result = $value;
+        });
+
+        $this->assertNull($reason);
+        $this->assertSame($value, $result);
+    }
+
+    public function testReturningRejectedReactPromise() {
+        $exception = new \Exception;
+        $promise = new ReactPromise(function ($resolve, $reject) use ($exception) {
+            $reject($exception);
+        });
+
+        $generator = function () use ($promise) {
+            return $promise;
+            yield; // Unreachable, but makes function a generator.
+        };
+
+        $coroutine = new Coroutine($generator());
+
+        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+            $reason = $exception;
+            $result = $value;
+        });
+
+        $this->assertSame($reason, $exception);
+        $this->assertNull($result);
     }
 }

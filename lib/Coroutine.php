@@ -3,6 +3,7 @@
 namespace Amp;
 
 use AsyncInterop\{ Loop, Promise };
+use React\Promise\PromiseInterface as ReactPromise;
 
 /**
  * Creates a promise from a generator function yielding promises.
@@ -57,21 +58,29 @@ final class Coroutine implements Promise {
                     $yielded = $this->generator->send($value);
                 }
 
-                if ($yielded instanceof Promise) {
-                    ++$this->depth;
-                    $yielded->when($this->when);
-                    --$this->depth;
-                    return;
+                if (!$yielded instanceof Promise) {
+                    if (!$this->generator->valid()) {
+                        $this->resolve($this->generator->getReturn());
+                        return;
+                    }
+
+                    if ($yielded instanceof ReactPromise) {
+                        $yielded = adapt($yielded);
+                    } else {
+                        throw new InvalidYieldError(
+                            $this->generator,
+                            \sprintf(
+                                "Unexpected yield; Expected an instance of %s or %s",
+                                Promise::class,
+                                ReactPromise::class
+                            )
+                        );
+                    }
                 }
 
-                if ($this->generator->valid()) {
-                    throw new InvalidYieldError(
-                        $this->generator,
-                        \sprintf("Unexpected yield; Expected an instance of %s", Promise::class)
-                    );
-                }
-
-                $this->resolve($this->generator->getReturn());
+                ++$this->depth;
+                $yielded->when($this->when);
+                --$this->depth;
             } catch (\Throwable $exception) {
                 $this->dispose($exception);
             }
@@ -80,21 +89,29 @@ final class Coroutine implements Promise {
         try {
             $yielded = $this->generator->current();
 
-            if ($yielded instanceof Promise) {
-                ++$this->depth;
-                $yielded->when($this->when);
-                --$this->depth;
-                return;
+            if (!$yielded instanceof Promise) {
+                if (!$this->generator->valid()) {
+                    $this->resolve($this->generator->getReturn());
+                    return;
+                }
+
+                if ($yielded instanceof ReactPromise) {
+                    $yielded = adapt($yielded);
+                } else {
+                    throw new InvalidYieldError(
+                        $this->generator,
+                        \sprintf(
+                            "Unexpected yield; Expected an instance of %s or %s",
+                            Promise::class,
+                            ReactPromise::class
+                        )
+                    );
+                }
             }
 
-            if ($this->generator->valid()) {
-                throw new InvalidYieldError(
-                    $this->generator,
-                    \sprintf("Unexpected yield; Expected an instance of %s", Promise::class)
-                );
-            }
-
-            $this->resolve($this->generator->getReturn());
+            ++$this->depth;
+            $yielded->when($this->when);
+            --$this->depth;
         } catch (\Throwable $exception) {
             $this->dispose($exception);
         }

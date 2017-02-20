@@ -2,8 +2,9 @@
 
 namespace Amp\Internal;
 
-use Amp\Failure;
+use Amp\{ Failure, function adapt };
 use AsyncInterop\{ Promise, Promise\ErrorHandler };
+use React\Promise\PromiseInterface as ReactPromise;
 
 /**
  * Trait used by Promise implementations. Do not use this trait in your code, instead compose your class from one of
@@ -59,6 +60,10 @@ trait Placeholder {
     private function resolve($value = null) {
         if ($this->resolved) {
             throw new \Error("Promise has already been resolved");
+        }
+
+        if ($value instanceof ReactPromise) {
+            $value = adapt($value);
         }
 
         $this->resolved = true;

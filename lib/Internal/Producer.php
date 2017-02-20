@@ -2,8 +2,9 @@
 
 namespace Amp\Internal;
 
-use Amp\{ Deferred, Success };
+use Amp\{ Deferred, Success, function adapt };
 use AsyncInterop\{ Promise, Promise\ErrorHandler };
+use React\Promise\PromiseInterface as ReactPromise;
 
 /**
  * Trait used by Stream implementations. Do not use this trait in your code, instead compose your class from one of
@@ -47,6 +48,10 @@ trait Producer {
             throw new \Error("Streams cannot emit values after calling resolve");
         }
 
+        if ($value instanceof ReactPromise) {
+            $value = adapt($value);
+        }
+
         if ($value instanceof Promise) {
             $deferred = new Deferred;
             $value->when(function ($e, $v) use ($deferred) {
@@ -74,6 +79,9 @@ trait Producer {
         foreach ($this->listeners as $onNext) {
             try {
                 $result = $onNext($value);
+                if ($result instanceof ReactPromise) {
+                    $result = adapt($result);
+                }
                 if ($result instanceof Promise) {
                     $promises[] = $result;
                 }
