@@ -25,7 +25,7 @@ class SomeTest extends \PHPUnit\Framework\TestCase {
             $result = $value;
         };
 
-        Amp\some($promises)->when($callback);
+        Amp\some($promises)->onResolve($callback);
 
         $this->assertSame([[], [1, 2, 3]], $result);
     }
@@ -38,7 +38,7 @@ class SomeTest extends \PHPUnit\Framework\TestCase {
             $reason = $exception;
         };
 
-        Amp\some($promises)->when($callback);
+        Amp\some($promises)->onResolve($callback);
 
         $this->assertInstanceOf(MultiReasonException::class, $reason);
         $this->assertEquals([$exception, $exception, $exception], $reason->getReasons());
@@ -52,7 +52,7 @@ class SomeTest extends \PHPUnit\Framework\TestCase {
             $result = $value;
         };
 
-        Amp\some($promises)->when($callback);
+        Amp\some($promises)->onResolve($callback);
 
         $this->assertSame([[0 => $exception, 1 => $exception], [2 => 3]], $result);
     }
@@ -69,7 +69,7 @@ class SomeTest extends \PHPUnit\Framework\TestCase {
                 $result = $value;
             };
 
-            Amp\some($promises)->when($callback);
+            Amp\some($promises)->onResolve($callback);
         });
 
         $this->assertEquals([[], [0 => 1, 1 => 2, 2 => 3]], $result);
@@ -89,7 +89,7 @@ class SomeTest extends \PHPUnit\Framework\TestCase {
                 $result = $value;
             };
 
-            Amp\some($promises)->when($callback);
+            Amp\some($promises)->onResolve($callback);
         });
 
         $this->assertEquals($expected, $result);

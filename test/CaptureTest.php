@@ -27,7 +27,7 @@ class CaptureTest extends \PHPUnit\Framework\TestCase {
             $result = $value;
         };
 
-        $promise->when($callback);
+        $promise->onResolve($callback);
 
         $this->assertFalse($invoked);
         $this->assertSame($value, $result);
@@ -52,7 +52,7 @@ class CaptureTest extends \PHPUnit\Framework\TestCase {
             $result = $value;
         };
 
-        $promise->when($callback);
+        $promise->onResolve($callback);
 
         $this->assertTrue($invoked);
         $this->assertSame($exception, $reason);
@@ -79,7 +79,7 @@ class CaptureTest extends \PHPUnit\Framework\TestCase {
             $reason = $exception;
         };
 
-        $promise->when($callback);
+        $promise->onResolve($callback);
 
         $this->assertTrue($invoked);
         $this->assertNotSame($exception, $reason);
@@ -106,7 +106,7 @@ class CaptureTest extends \PHPUnit\Framework\TestCase {
             $reason = $exception;
         };
 
-        $promise->when($callback);
+        $promise->onResolve($callback);
 
         $this->assertFalse($invoked);
         $this->assertSame($exception, $reason);
@@ -134,7 +134,7 @@ class CaptureTest extends \PHPUnit\Framework\TestCase {
             $result = $value;
         };
 
-        $promise->when($callback);
+        $promise->onResolve($callback);
 
         $this->assertTrue($invoked);
         $this->assertSame($exception, $reason);

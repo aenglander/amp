@@ -104,7 +104,7 @@ function rethrow($promise) {
         }
     }
 
-    $promise->when(function ($exception) {
+    $promise->onResolve(function ($exception) {
         if ($exception) {
             throw $exception;
         }
@@ -132,7 +132,7 @@ function wait($promise) {
 
     $resolved = false;
     Loop::run(function () use (&$resolved, &$value, &$exception, $promise) {
-        $promise->when(function ($e, $v) use (&$resolved, &$value, &$exception) {
+        $promise->onResolve(function ($e, $v) use (&$resolved, &$value, &$exception) {
             Loop::stop();
             $resolved = true;
             $exception = $e;
@@ -172,7 +172,7 @@ function pipe($promise, callable $functor): Promise {
 
     $deferred = new Deferred;
 
-    $promise->when(function ($exception, $value) use ($deferred, $functor) {
+    $promise->onResolve(function ($exception, $value) use ($deferred, $functor) {
         if ($exception) {
             $deferred->fail($exception);
             return;
@@ -209,7 +209,7 @@ function capture($promise, string $className, callable $functor): Promise {
 
     $deferred = new Deferred;
 
-    $promise->when(function ($exception, $value) use ($deferred, $className, $functor) {
+    $promise->onResolve(function ($exception, $value) use ($deferred, $className, $functor) {
         if (!$exception) {
             $deferred->resolve($value);
             return;
@@ -263,7 +263,7 @@ function timeout($promise, int $timeout): Promise {
     });
     Loop::unreference($watcher);
 
-    $promise->when(function () use (&$resolved, $promise, $deferred, $watcher) {
+    $promise->onResolve(function () use (&$resolved, $promise, $deferred, $watcher) {
         Loop::cancel($watcher);
 
         if ($resolved) {
@@ -374,7 +374,7 @@ function any(array $promises): Promise {
             throw new \Error("Non-promise provided");
         }
 
-        $promise->when(function ($error, $value) use (&$pending, &$errors, &$values, $key, $deferred) {
+        $promise->onResolve(function ($error, $value) use (&$pending, &$errors, &$values, $key, $deferred) {
             if ($error) {
                 $errors[$key] = $error;
             } else {
@@ -418,7 +418,7 @@ function all(array $promises): Promise {
             throw new \Error("Non-promise provided");
         }
 
-        $promise->when(function ($exception, $value) use (&$values, &$pending, &$resolved, $key, $deferred) {
+        $promise->onResolve(function ($exception, $value) use (&$values, &$pending, &$resolved, $key, $deferred) {
             if ($resolved) {
                 return;
             }
@@ -466,7 +466,7 @@ function first(array $promises): Promise {
             throw new \Error("Non-promise provided");
         }
 
-        $promise->when(function ($exception, $value) use (&$exceptions, &$pending, &$resolved, $key, $deferred) {
+        $promise->onResolve(function ($exception, $value) use (&$exceptions, &$pending, &$resolved, $key, $deferred) {
             if ($resolved) {
                 return;
             }
@@ -514,7 +514,7 @@ function some(array $promises): Promise {
             throw new \Error("Non-promise provided");
         }
 
-        $promise->when(function ($exception, $value) use (&$values, &$exceptions, &$pending, $key, $deferred) {
+        $promise->onResolve(function ($exception, $value) use (&$values, &$exceptions, &$pending, $key, $deferred) {
             if ($exception) {
                 $exceptions[$key] = $exception;
             } else {
@@ -642,7 +642,7 @@ function merge(array $streams): Stream {
         });
     }
 
-    all($streams)->when(function ($exception, array $values = null) use (&$pending, $emitter) {
+    all($streams)->onResolve(function ($exception, array $values = null) use (&$pending, $emitter) {
         $pending = false;
 
         if ($exception) {
@@ -704,7 +704,7 @@ function concat(array $streams): Stream {
         $promise = all($previous);
     }
 
-    $promise->when(function ($exception, array $values = null) use ($emitter) {
+    $promise->onResolve(function ($exception, array $values = null) use ($emitter) {
         if ($exception) {
             $emitter->fail($exception);
             return;

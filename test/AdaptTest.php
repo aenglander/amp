@@ -16,7 +16,7 @@ class PromiseMock {
     }
 
     public function then(callable $onFulfilled = null, callable $onRejected = null) {
-        $this->promise->when(function ($exception, $value) use ($onFulfilled, $onRejected) {
+        $this->promise->onResolve(function ($exception, $value) use ($onFulfilled, $onRejected) {
             if ($exception) {
                 if ($onRejected) {
                     $onRejected($exception);
@@ -63,7 +63,7 @@ class AdaptTest extends \PHPUnit\Framework\TestCase {
 
         $promise = Amp\adapt($promise);
 
-        $promise->when(function ($exception, $value) use (&$result) {
+        $promise->onResolve(function ($exception, $value) use (&$result) {
             $result = $value;
         });
 
@@ -80,7 +80,7 @@ class AdaptTest extends \PHPUnit\Framework\TestCase {
 
         $promise = Amp\adapt($promise);
 
-        $promise->when(function ($exception, $value) use (&$reason) {
+        $promise->onResolve(function ($exception, $value) use (&$reason) {
             $reason = $exception;
         });
 

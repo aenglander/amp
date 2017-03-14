@@ -25,7 +25,7 @@ class FirstTest extends \PHPUnit\Framework\TestCase {
             $result = $value;
         };
 
-        Amp\first($promises)->when($callback);
+        Amp\first($promises)->onResolve($callback);
 
         $this->assertSame(1, $result);
     }
@@ -38,7 +38,7 @@ class FirstTest extends \PHPUnit\Framework\TestCase {
             $reason = $exception;
         };
 
-        Amp\first($promises)->when($callback);
+        Amp\first($promises)->onResolve($callback);
 
         $this->assertInstanceOf(MultiReasonException::class, $reason);
         $this->assertEquals([$exception, $exception, $exception], $reason->getReasons());
@@ -52,7 +52,7 @@ class FirstTest extends \PHPUnit\Framework\TestCase {
             $result = $value;
         };
 
-        Amp\first($promises)->when($callback);
+        Amp\first($promises)->onResolve($callback);
 
         $this->assertSame(3, $result);
     }
@@ -69,7 +69,7 @@ class FirstTest extends \PHPUnit\Framework\TestCase {
                 $result = $value;
             };
 
-            Amp\first($promises)->when($callback);
+            Amp\first($promises)->onResolve($callback);
         });
 
         $this->assertSame(3, $result);

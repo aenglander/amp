@@ -24,7 +24,7 @@ class TimeoutTest extends \PHPUnit\Framework\TestCase {
                 $result = $value;
             };
 
-            $promise->when($callback);
+            $promise->onResolve($callback);
 
             $this->assertSame($value, $result);
         });
@@ -43,7 +43,7 @@ class TimeoutTest extends \PHPUnit\Framework\TestCase {
                 $reason = $exception;
             };
 
-            $promise->when($callback);
+            $promise->onResolve($callback);
 
             $this->assertSame($exception, $reason);
         });
@@ -65,7 +65,7 @@ class TimeoutTest extends \PHPUnit\Framework\TestCase {
                 $result = $value;
             };
 
-            $promise->when($callback);
+            $promise->onResolve($callback);
         });
 
         $this->assertSame($value, $result);
@@ -85,7 +85,7 @@ class TimeoutTest extends \PHPUnit\Framework\TestCase {
                 $reason = $exception;
             };
 
-            $promise->when($callback);
+            $promise->onResolve($callback);
         });
 
         $this->assertInstanceOf(Amp\TimeoutException::class, $reason);
@@ -107,7 +107,7 @@ class TimeoutTest extends \PHPUnit\Framework\TestCase {
                 $result = $value;
             };
 
-            $promise->when($callback);
+            $promise->onResolve($callback);
 
             $this->assertSame($value, $result);
         });

@@ -16,7 +16,7 @@ class CallTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertInstanceOf(Promise::class, $promise);
 
-        $promise->when(function ($exception, $value) use (&$reason, &$result) {
+        $promise->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -33,7 +33,7 @@ class CallTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertInstanceOf(Promise::class, $promise);
 
-        $promise->when(function ($exception, $value) use (&$reason, &$result) {
+        $promise->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -50,7 +50,7 @@ class CallTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertInstanceOf(Promise::class, $promise);
 
-        $promise->when(function ($exception, $value) use (&$reason, &$result) {
+        $promise->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -67,7 +67,7 @@ class CallTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertInstanceOf(Coroutine::class, $promise);
 
-        $promise->when(function ($exception, $value) use (&$reason, &$result) {
+        $promise->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });

@@ -38,7 +38,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertNull($yielded);
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -124,7 +124,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -142,7 +142,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -163,7 +163,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -184,7 +184,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -206,7 +206,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -230,7 +230,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -249,7 +249,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -274,7 +274,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -300,7 +300,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -328,7 +328,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
             $coroutine = new Coroutine($generator());
 
-            $coroutine->when(function ($exception) use (&$reason) {
+            $coroutine->onResolve(function ($exception) use (&$reason) {
                 $reason = $exception;
             });
         });
@@ -359,7 +359,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
             $coroutine = new Coroutine($generator());
 
-            $coroutine->when(function ($exception) use (&$reason) {
+            $coroutine->onResolve(function ($exception) use (&$reason) {
                 $reason = $exception;
             });
         });
@@ -387,7 +387,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception) use (&$reason) {
+        $coroutine->onResolve(function ($exception) use (&$reason) {
             $reason = $exception;
         });
 
@@ -411,7 +411,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
             $coroutine = new Coroutine($generator());
 
-            $coroutine->when(function () use (&$invoked) {
+            $coroutine->onResolve(function () use (&$invoked) {
                 $invoked = true;
             });
         });
@@ -440,7 +440,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
             $coroutine = new Coroutine($generator());
 
-            $coroutine->when(function () use (&$invoked) {
+            $coroutine->onResolve(function () use (&$invoked) {
                 $invoked = true;
             });
         });
@@ -460,7 +460,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
         $coroutine = new Coroutine($generator());
 
         $invoked = false;
-        $coroutine->when(function () use (&$invoked) {
+        $coroutine->onResolve(function () use (&$invoked) {
             $invoked = true;
         });
 
@@ -490,7 +490,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertInstanceOf(Promise::class, $promise);
 
-        $promise->when(function ($exception, $value) use (&$reason, &$result) {
+        $promise->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -513,7 +513,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertInstanceOf(Promise::class, $promise);
 
-        $promise->when(function ($exception, $value) use (&$reason, &$result) {
+        $promise->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -536,7 +536,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertInstanceOf(Promise::class, $promise);
 
-        $promise->when(function ($exception, $value) use (&$reason, &$result) {
+        $promise->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -558,7 +558,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $this->assertInstanceOf(Promise::class, $promise);
 
-        $promise->when(function ($exception, $value) use (&$reason, &$result) {
+        $promise->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -577,7 +577,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -602,7 +602,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -630,7 +630,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -651,7 +651,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -673,7 +673,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -694,7 +694,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -716,7 +716,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -738,7 +738,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });
@@ -760,7 +760,7 @@ class CoroutineTest extends \PHPUnit\Framework\TestCase {
 
         $coroutine = new Coroutine($generator());
 
-        $coroutine->when(function ($exception, $value) use (&$reason, &$result) {
+        $coroutine->onResolve(function ($exception, $value) use (&$reason, &$result) {
             $reason = $exception;
             $result = $value;
         });

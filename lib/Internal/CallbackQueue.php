@@ -9,7 +9,7 @@ use Amp\Loop;
  *
  * @internal
  */
-class WhenQueue {
+class CallbackQueue {
     /** @var callable[] */
     private $queue = [];
 

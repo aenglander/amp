@@ -21,16 +21,16 @@ trait Placeholder {
     /** @var mixed */
     private $result;
 
-    /** @var callable|\Amp\Internal\WhenQueue|null */
+    /** @var callable|\Amp\Internal\CallbackQueue|null */
     private $onResolved;
 
     /**
      * @inheritdoc
      */
-    public function when(callable $onResolved) {
+    public function onResolve(callable $onResolved) {
         if ($this->resolved) {
             if ($this->result instanceof Promise) {
-                $this->result->when($onResolved);
+                $this->result->onResolve($onResolved);
                 return;
             }
 
@@ -49,8 +49,8 @@ trait Placeholder {
             return;
         }
 
-        if (!$this->onResolved instanceof WhenQueue) {
-            $this->onResolved = new WhenQueue($this->onResolved);
+        if (!$this->onResolved instanceof CallbackQueue) {
+            $this->onResolved = new CallbackQueue($this->onResolved);
         }
 
         $this->onResolved->push($onResolved);
@@ -81,7 +81,7 @@ trait Placeholder {
         $this->onResolved = null;
 
         if ($this->result instanceof Promise) {
-            $this->result->when($onResolved);
+            $this->result->onResolve($onResolved);
             return;
         }
 
