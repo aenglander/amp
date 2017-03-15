@@ -3,6 +3,8 @@
 namespace Amp;
 
 use React\Promise\PromiseInterface as ReactPromise;
+use function Amp\Promise\adapt;
+use function Amp\Promise\all;
 
 /**
  * Creates a promise from a generator function yielding promises.
